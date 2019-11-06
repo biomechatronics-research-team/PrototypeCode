@@ -1,44 +1,44 @@
 /////////////////////////////////////////////////////////////
 ///////////////// INPUT/OUTPUT VARIABLES ////////////////////
 /////////////////////////////////////////////////////////////
-int CLK = 9;
-int DT = 8;
-//int RedLed = 5;
-//int GreenLed = 6;
-
+int CLK = 3;          //Initialize CLK pin on the encoder
+int DT = 2;           //Initialize DT pin on the encoder
 /////////////////////////////////////////////////////////////
 /////////////////////// VARIABLES ///////////////////////////
 /////////////////////////////////////////////////////////////
-int State;
-int LastState;
-int RotPos = 0;
-//boolean Clockwise;
+int State;            //Current angle of the encoder's CLK
+int LastState;        //Previous angle of the encoder's CLK
+int RotPos = 90;      //Starting position of the encoder (reference)
 
-
+/* This code holds the instructions to be followed by the Arduino 
+ * and the encoder to obtain data from the subject's leg at two points:
+ * the knee and the hip. It registers angle movements and shows them in
+ * the Serial Monitor every 1 millisecond.
+ * @author Ernesto A. Sanchez Lopez
+  */
 
 void setup() {
   Serial.begin(9600);
   pinMode(CLK, INPUT);
   pinMode(DT, INPUT);
-  //pinMode(RedLed, OUTPUT);
-  //pinMode(GreenLed, OUTPUT);
 
+  // Read encoder position before loop begins
   LastState = digitalRead(CLK);
 }
 
-
-
 void loop() {
+  // Read current encoder position
   State = digitalRead(CLK);
-  if(State != LastState) {
-    if(digitalRead(DT) != State){
-      RotPos = RotPos - 9;
+  if(State != LastState) {          // When State and LastState are not equal, a change in position has occured 
+    if(digitalRead(DT) != State){   // If DT pin does not equal State, the encoder has been moved counter clockwise
+      RotPos = RotPos - 9;        
     }
-    else {
+    else {                          // If DT pin equals State, the encoder has been moved clockwise
       RotPos = RotPos + 9;
     }
-    //Serial.print("Position: ");
-    Serial.println(RotPos);
   }
   LastState = State;
+  // Print current position every 1 millisecond
+  Serial.println(RotPos);
+  delay(1);
 }
